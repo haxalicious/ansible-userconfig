@@ -1,0 +1,115 @@
+---
+- name: Update apt cache
+  ansible.builtin.apt:
+    update_cache: yes
+  when: ansible_pkg_mgr == "apt"
+  become: yes
+  tags:
+    - install
+    - root
+
+- name: Update yum cache
+  ansible.builtin.yum:
+    update_cache: yes
+  when: ansible_pkg_mgr == "yum"
+  become: yes
+  tags:
+    - install
+    - root
+
+- name: Update apk cache
+  community.general.apk:
+    update_cache: yes
+  when: ansible_pkg_mgr == "apk"
+  become: yes
+  tags:
+    - install
+    - root
+
+- name: Update dnf cache
+  ansible.builtin.dnf:
+    update_cache: yes
+  when: ansible_pkg_mgr == "dnf"
+  become: yes
+  tags:
+    - install
+    - root
+
+- name: Update zypper cache
+  community.general.zypper:
+    name: zypper
+    update_cache: yes
+  when: ansible_pkg_mgr == "zypper"
+  become: yes
+  tags:
+    - install
+    - root
+
+- name: Update pacman cache
+  community.general.pacman:
+    update_cache: yes
+  when: ansible_pkg_mgr == "pacman"
+  become: yes
+  tags:
+    - install
+    - root
+
+- name: Install rsync and zsh
+  package:
+    name:
+      - rsync
+      - zsh
+    state: present
+  become: yes
+  tags:
+    - install
+    - root
+
+- name: Add SSH key
+  authorized_key:
+    user: "{{ shelluser }}"
+    state: present
+    key: "{{ ssh_key }}"
+  tags:
+    - configure
+
+- name: Copy user config
+  synchronize:
+    src: "{{ dotfiles }}"
+    dest: "{{ ansible_env.HOME }}"
+  tags:
+    - configure
+    - file
+
+- name: Set shell
+  user:
+    name: "{{ shelluser }}"
+    shell: /bin/zsh
+  become: yes
+  tags:
+    - configure
+    - root
+
+- name: Disable password login over SSH
+  lineinfile:
+    path: "/etc/ssh/sshd_config"
+    regex: "^(#)?{{item.key}}"
+    line: "{{item.key}} {{item.value}}"
+    state: present
+  loop:
+    - { key: "PermitRootLogin", value: "prohibit-password" }
+    - { key: "PasswordAuthentication", value: "no" }
+  notify:
+    - restart sshd
+  become: yes
+  tags:
+    - configure
+    - root
+
+- name: Cleanup unused files
+  file:
+    path: "{{ ansible_env.HOME }}/.bash_history"
+    state: absent
+  tags:
+    - cleanup
+    - file

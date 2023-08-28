@@ -1,0 +1,4 @@
+---
+ssh_key: "{{ lookup('file', lookup('env', 'HOME') + '/.ssh/id_rsa.pub') }}"
+dotfiles: ~/.dotfiles/
+shelluser: "{{ ansible_user }}"
