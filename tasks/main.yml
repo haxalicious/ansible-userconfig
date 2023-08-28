@@ -76,7 +76,7 @@
 - name: Copy user config
   synchronize:
     src: "{{ dotfiles }}"
-    dest: "{{ ansible_env.HOME }}"
+    dest: "{{ ansible_env.HOME }}" # TODO fix this to properly drop files for given user
   tags:
     - configure
     - file
