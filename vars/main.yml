@@ -1,6 +1,7 @@
 ---
-ssh_key: "{{ lookup('file', lookup('env', 'HOME') + '/.ssh/id_rsa.pub') }}"
 dotfiles: ~/.dotfiles/
+ssh_key_path: ~/.ssh/id_rsa.pub
+ssh_key: "{{ lookup('file', '{{ ssh_key_path }}') }}"
 shelluser: "{{ ansible_user }}"
 pwauth: 'no'
 rootlogin: 'prohibit-password'
