@@ -97,8 +97,8 @@
     line: "{{item.key}} {{item.value}}"
     state: present
   loop:
-    - { key: "PermitRootLogin", value: "prohibit-password" }
-    - { key: "PasswordAuthentication", value: "no" }
+    - { key: "PermitRootLogin", value: "{{ rootlogin }}" }
+    - { key: "PasswordAuthentication", value: "{{ pwauth }}" }
   notify:
     - restart sshd
   become: yes
