@@ -10,6 +10,9 @@ Ansible role for initial user setup.
  - `ssh_key`:
    - Default: Contents of `ssh_key_path`
    - Description: SSH public key.
+ - `shell`:
+   - Default: zsh
+   - Description: Shell to install/set.
  - `shelluser`:
    - Default: '{{ ansible_user }}'
    - Description: User to install config for.

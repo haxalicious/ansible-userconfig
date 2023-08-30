@@ -4,6 +4,7 @@ dotfiles: ~/.dotfiles/
 ssh_key_path: ~/.ssh/id_rsa.pub
 # Runtime options
 ssh_key: "{{ lookup('file', '{{ ssh_key_path }}') }}"
+shell: zsh
 shelluser: "{{ ansible_user }}"
 privileged: false
 # /etc/ssh/sshd_config options

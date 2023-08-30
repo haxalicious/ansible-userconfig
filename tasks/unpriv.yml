@@ -28,15 +28,15 @@
 
 - name: Set user shell (unprivileged)
   block:
-    - name: Check if zsh exists in PATH
-      command: which zsh
-      register: zsh_path
+    - name: "Check if {{ shell }} exists in PATH"
+      command: "which {{ shell }}"
+      register: shell_path
       changed_when: false
 
     - name: Get user shell
       user:
         name: "{{ shelluser }}"
-        shell: "{{ zsh_path.stdout }}"
+        shell: "{{ shell_path.stdout }}"
       register: setshell
       check_mode: true
 
@@ -48,17 +48,10 @@
       no_log: true
 
     - name: Run chsh to change shell
-      command: "chsh -s {{ zsh_path.stdout }}"
+      command: "chsh -s {{ shell_path.stdout }}"
       args:
         stdin: "{{ password_prompt.user_input }}"
       when: setshell.changed
   when: not privileged
   tags:
    - configure
-
-- name: Cleanup unused files
-  file:
-    path: "{{ ansible_env.HOME }}/.bash_history"
-    state: absent
-  tags:
-    - file
