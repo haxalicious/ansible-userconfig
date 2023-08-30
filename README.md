@@ -13,6 +13,9 @@ Ansible role for initial user setup.
  - `shelluser`:
    - Default: '{{ ansible_user }}'
    - Description: User to install config for.
+ - `privileged`:
+   - Default: true
+   - Description: Whether or not user has permissions to become another user. If false, disables all tasks that require root/sudo.
  - `pwauth`:
    - Default: 'no'
    - Description: Whether to allow SSH password authentication.

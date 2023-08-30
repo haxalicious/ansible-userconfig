@@ -1,0 +1,87 @@
+---
+- name: Update apt cache
+  ansible.builtin.apt:
+    update_cache: yes
+  when: ansible_pkg_mgr == "apt"
+  become: yes
+  tags:
+    - install
+
+- name: Update yum cache
+  ansible.builtin.yum:
+    update_cache: yes
+  when: ansible_pkg_mgr == "yum"
+  become: yes
+  tags:
+    - install
+
+- name: Update apk cache
+  community.general.apk:
+    update_cache: yes
+  when: ansible_pkg_mgr == "apk"
+  become: yes
+  tags:
+    - install
+
+- name: Update dnf cache
+  ansible.builtin.dnf:
+    update_cache: yes
+  when: ansible_pkg_mgr == "dnf"
+  become: yes
+  tags:
+    - install
+
+- name: Update zypper cache
+  community.general.zypper:
+    name: zypper
+    update_cache: yes
+  when: ansible_pkg_mgr == "zypper"
+  become: yes
+  tags:
+    - install
+
+- name: Update pacman cache
+  community.general.pacman:
+    update_cache: yes
+  when: ansible_pkg_mgr == "pacman"
+  become: yes
+  tags:
+    - install
+
+- name: Install rsync and zsh
+  package:
+    name:
+      - rsync
+      - zsh
+    state: present
+  become: yes
+  tags:
+    - install
+
+- name: Set shell
+  user:
+    name: "{{ shelluser }}"
+    shell: /bin/zsh
+  become: yes
+  tags:
+    - configure
+
+- name: Disable password login over SSH
+  lineinfile:
+    path: "/etc/ssh/sshd_config"
+    regex: "^(#)?{{item.key}}"
+    line: "{{item.key}} {{item.value}}"
+    state: present
+  loop:
+    - { key: "PermitRootLogin", value: "{{ rootlogin }}" }
+    - { key: "PasswordAuthentication", value: "{{ pwauth }}" }
+  notify:
+    - restart sshd
+  become: yes
+  tags:
+    - configure
+
+- name: Run unprivileged tasks
+  import_tasks: "{{ role_path }}/tasks/unpriv.yml"
+  become: true
+  become_user: "{{ shelluser }}"

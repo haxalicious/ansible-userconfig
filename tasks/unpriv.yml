@@ -1,0 +1,64 @@
+---
+- name: Add SSH key
+  authorized_key:
+    user: "{{ shelluser }}"
+    state: present
+    key: "{{ ssh_key }}"
+  tags:
+    - configure
+
+- name: Copy user config with rsync
+  synchronize:
+    src: "{{ dotfiles }}"
+    dest: "{{ ansible_env.HOME }}"
+  register: rsync_status
+  ignore_errors: true
+  tags:
+    - configure
+    - file
+
+- name: Copy user config with builtin copy module
+  copy:
+    src: "{{ dotfiles }}"
+    dest: "{{ ansible_env.HOME }}"
+  when: rsync_status.rc != 0
+  tags:
+    - configure
+    - file
+
+- name: Set user shell (unprivileged)
+  block:
+    - name: Check if zsh exists in PATH
+      command: which zsh
+      register: zsh_path
+      changed_when: false
+
+    - name: Get user shell
+      user:
+        name: "{{ shelluser }}"
+        shell: "{{ zsh_path.stdout }}"
+      register: setshell
+      check_mode: true
+
+    - pause:
+        prompt: "Password for {{ ansible_user_id }}@{{ ansible_host }}"
+        echo: false
+      when: setshell.changed
+      register: password_prompt
+      no_log: true
+
+    - name: Run chsh to change shell
+      command: "chsh -s {{ zsh_path.stdout }}"
+      args:
+        stdin: "{{ password_prompt.user_input }}"
+      when: setshell.changed
+  when: not privileged
+  tags:
+   - configure
+
+- name: Cleanup unused files
+  file:
+    path: "{{ ansible_env.HOME }}/.bash_history"
+    state: absent
+  tags:
+    - file
