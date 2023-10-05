@@ -9,7 +9,7 @@
 
 - name: Get user info
   user:
-    name: {{ shelluser }}
+    name: "{{ shelluser }}"
     state: present
   register: shelluser_info
 
