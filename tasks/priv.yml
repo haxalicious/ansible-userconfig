@@ -2,6 +2,7 @@
 - name: Update apt cache
   ansible.builtin.apt:
     update_cache: yes
+  changed_when: false
   when: ansible_pkg_mgr == "apt"
   tags:
     - install
@@ -9,13 +10,16 @@
 - name: Update yum cache
   ansible.builtin.yum:
     update_cache: yes
+  changed_when: false
   when: ansible_pkg_mgr == "yum"
   tags:
     - install
+  changed_when: false
 
 - name: Update apk cache
   community.general.apk:
     update_cache: yes
+  changed_when: false
   when: ansible_pkg_mgr == "apk"
   tags:
     - install
@@ -23,6 +27,7 @@
 - name: Update dnf cache
   ansible.builtin.dnf:
     update_cache: yes
+  changed_when: false
   when: ansible_pkg_mgr == "dnf"
   tags:
     - install
@@ -31,6 +36,7 @@
   community.general.zypper:
     name: zypper
     update_cache: yes
+  changed_when: false
   when: ansible_pkg_mgr == "zypper"
   tags:
     - install
@@ -38,6 +44,7 @@
 - name: Update pacman cache
   community.general.pacman:
     update_cache: yes
+  changed_when: false
   when: ansible_pkg_mgr == "pacman"
   tags:
     - install
