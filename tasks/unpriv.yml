@@ -17,6 +17,8 @@
   synchronize:
     src: "{{ dotfiles }}"
     dest: "{{ shelluser_info.home }}"
+    archive: false
+    recursive: true
   register: rsync_status
   ignore_errors: true
   tags:
