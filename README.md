@@ -2,7 +2,7 @@
 Ansible role for initial user setup.
 ## Role variables
  - `dotfiles`:
-   - Default: ~/.dotfiles
+   - Default: ~/.dotfiles/dotfiles/
    - Description: Path to dotfiles.
  - `ssh_key_path`:
    - Default: ~/.ssh/id_rsa.pub
