@@ -7,10 +7,16 @@
   tags:
     - configure
 
+- name: Get user info
+  user:
+    name: {{ shelluser }}
+    state: present
+  register: shelluser_info
+
 - name: Copy user config with rsync
   synchronize:
     src: "{{ dotfiles }}"
-    dest: "{{ ansible_env.HOME }}"
+    dest: "{{ shelluser_info.home }}"
   register: rsync_status
   ignore_errors: true
   tags:
@@ -20,7 +26,7 @@
 - name: Copy user config with builtin copy module
   copy:
     src: "{{ dotfiles }}"
-    dest: "{{ ansible_env.HOME }}"
+    dest: "{{ shelluser_info.home }}"
   when: rsync_status.rc != 0
   tags:
     - configure

@@ -61,7 +61,7 @@
 - name: Set shell
   user:
     name: "{{ shelluser }}"
-    shell: "{{ shell_path }}"
+    shell: "{{ shell_path.stdout }}"
   tags:
     - configure
 
