@@ -1,6 +1,6 @@
 ---
 # Host file paths
-dotfiles: ~/.dotfiles/
+dotfiles: ~/.dotfiles/dotfiles/
 ssh_key_path: ~/.ssh/id_rsa.pub
 # Runtime options
 ssh_key: "{{ lookup('file', '{{ ssh_key_path }}') }}"
