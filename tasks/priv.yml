@@ -14,7 +14,6 @@
   when: ansible_pkg_mgr == "yum"
   tags:
     - install
-  changed_when: false
 
 - name: Update apk cache
   community.general.apk:
